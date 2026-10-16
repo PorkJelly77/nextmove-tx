@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NextMove TX: Free Help Plan</title>
+<style>
+  :root { --fg: var(--foreground, #1a1a1a); --mut: var(--muted-foreground, #555); --acc: var(--accent, #bf5700); --bd: var(--border, #ccc); --cd: var(--card, rgba(127,127,127,.07)); }
+  * { box-sizing: border-box; }
+  body { color: var(--fg); max-width: 560px; line-height: 1.5; padding: 4px; font-size: 19px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { font-size: 1.3rem; margin: 22px 0 8px; }
+  p { margin: 6px 0; }
+  .sub { color: var(--mut); font-size: 1rem; }
+  .q { font-weight: 700; font-size: 1.15rem; margin: 20px 0 8px; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { border: 2px solid var(--bd); border-radius: 12px; padding: 14px 10px; text-align: center; cursor: pointer; font-size: 1.05rem; background: var(--cd); user-select: none; }
+  .tile .ic { font-size: 1.8rem; display: block; }
+  .tile.on { border-color: var(--acc); outline: 3px solid var(--acc); font-weight: 700; }
+  .yn { display: flex; gap: 10px; }
+  .yn .tile { flex: 1; padding: 12px 6px; }
+  input[type=number] { width: 100%; padding: 14px; border: 2px solid var(--bd); border-radius: 10px; font-size: 1.2rem; background: transparent; color: var(--fg); }
+  .go { margin-top: 22px; width: 100%; padding: 18px; border: 0; border-radius: 12px; background: var(--acc); color: #fff; font-size: 1.3rem; font-weight: 800; cursor: pointer; }
+  .step { border: 2px solid var(--bd); border-radius: 14px; padding: 14px; margin: 14px 0; background: var(--cd); }
+  .step h3 { margin: 0 0 6px; font-size: 1.2rem; }
+  .step .num { display: inline-block; background: var(--acc); color: #fff; border-radius: 50%; width: 32px; height: 32px; text-align: center; line-height: 32px; margin-right: 6px; font-weight: 800; }
+  .call { display: block; text-align: center; background: #1e8e3e; color: #fff !important; text-decoration: none; font-size: 1.25rem; font-weight: 800; padding: 16px; border-radius: 12px; margin: 10px 0 6px; }
+  .web { display: block; text-align: center; border: 2px solid var(--acc); color: var(--acc) !important; text-decoration: none; font-weight: 700; padding: 12px; border-radius: 12px; margin: 6px 0; font-size: 1rem; }
+  .say { border-left: 5px solid var(--acc); padding: 8px 12px; margin: 10px 0; font-style: italic; background: rgba(127,127,127,.08); border-radius: 0 8px 8px 0; }
+  .ready { font-size: .95rem; margin-top: 8px; }
+  .warn { border-color: #c0392b; }
+  .warn h3 { color: #c0392b; }
+  details { margin: 14px 0; }
+  summary { font-size: 1.15rem; font-weight: 700; cursor: pointer; padding: 10px 0; }
+  .small { font-size: .85rem; color: var(--mut); margin-top: 20px; }
+  .bar { display: flex; gap: 10px; }
+  .bar button { flex: 1; padding: 14px; border-radius: 12px; border: 2px solid var(--acc); background: transparent; color: var(--fg); font-size: 1rem; font-weight: 700; cursor: pointer; }
+  @media print { .call, .web { border: 1px solid #000; color: #000 !important; background: none; } #form, .bar { display: none; } }
+</style>
+</head>
+<body>
+<h1>♜ NextMove TX</h1>
+<p class="sub">In a bind? You're not alone. Answer a few taps and we'll tell you <b>who to call</b> and <b>what to say</b>. Free. Nothing is saved.</p>
+
+<div id="form">
+  <div class="q">1. What do you need help with? <span class="sub">(tap all that fit)</span></div>
+  <div class="tiles" id="needs">
+    <div class="tile" data-v="car"><span class="ic">🚗</span>Car broke / need a car</div>
+    <div class="tile" data-v="home_repair"><span class="ic">🏠</span>House repairs</div>
+    <div class="tile" data-v="utilities"><span class="ic">💡</span>Light or gas bill</div>
+    <div class="tile" data-v="rent"><span class="ic">🔑</span>Rent or eviction</div>
+    <div class="tile" data-v="food"><span class="ic">🍞</span>Food</div>
+    <div class="tile" data-v="loan"><span class="ic">💵</span>Need a loan</div>
+    <div class="tile" data-v="credit"><span class="ic">📄</span>Bad credit / collectors</div>
+    <div class="tile" data-v="disability"><span class="ic">♿</span>Disability / SSDI</div>
+  </div>
+
+  <div class="q">2. Do you own your home?</div>
+  <div class="yn" data-k="owner"><div class="tile" data-v="1">Yes</div><div class="tile" data-v="0">No</div></div>
+
+  <div class="q">3. Do you live in the country or a small town?</div>
+  <div class="yn" data-k="rural"><div class="tile" data-v="1">Yes</div><div class="tile" data-v="0">No, a city</div></div>
+
+  <div class="q">4. Is anyone in your home 62 or older?</div>
+  <div class="yn" data-k="senior"><div class="tile" data-v="1">Yes</div><div class="tile" data-v="0">No</div></div>
+
+  <div class="q">5. About how much money comes in each month? <span class="sub">(optional)</span></div>
+  <input type="number" id="income" inputmode="numeric" placeholder="Example: 1500">
+
+  <button class="go" onclick="run()">Show Me Who To Call ➜</button>
+</div>
+
+<div id="out"></div>
+
+<p class="small">NextMove TX is a free guide. We are not a lender and we never ask for money. Phone numbers checked October 2026; programs can change. Feeling hopeless? Call or text <a href="tel:988">988</a> any time.</p>
+
+<script>
+/*ENGINE_START*/
+function payment(principal, aprPct, months) {
+  const r = aprPct / 100 / 12;
+  return r === 0 ? principal / months : principal * r / (1 - Math.pow(1 + r, -months));
+}
+const L = (url, txt) => `<a class="web" href="https://${url}" target="_blank" rel="noopener">🌐 ${txt || "Website"}</a>`;
+const T = (num, label) => `<a class="call" href="tel:${num.replace(/\D/g, "")}">📞 Call ${label || num}</a>`;
+const NEED_WORDS = {car: "a car repair", home_repair: "house repairs", utilities: "my light bill", rent: "rent", food: "food", loan: "money", credit: "debt", disability: "disability"};
+
+// step fields: t title, why plain sentence, call html, say script, ready what to have, web html, warn, pri (lower = sooner)
+function buildPlan(a) {
+  const s = [];
+  const has = n => a.needs.includes(n);
+
+  s.push({pri: 1, t: "Call 2-1-1 (free, real person)", why: "They know which churches and charities near you have help money right now.",
+    call: T("211", "2-1-1") + T("877-541-7905", "(877) 541-7905 if 211 won't connect"),
+    say: `"Hi, I live in [your county]. I need help with ${a.needs.map(n => NEED_WORDS[n]).join(", ")}. What programs near me can help?"`,
+    ready: "Pen and paper. Write down every name and number they give you.", web: L("211texas.org", "211texas.org")});
+
+  if (has("car")) s.push({pri: 2, t: "Car help", why: "First find out what the repair costs. Fixing is usually cheaper than buying, and a running car can get you a better loan.",
+    call: T("211", "2-1-1 and ask for car repair help"),
+    say: `"My car is broken and I need it for work and doctor visits. Are there churches, the Salvation Army, or St. Vincent de Paul near me that help with car repairs?"`,
+    ready: "A written repair quote from a shop. Charities usually want to see one."});
+
+  if (has("home_repair")) {
+    s.push({pri: 3, t: "Free home repairs (Weatherization)", why: "Texas fixes drafts, insulation, and sometimes heating and air for free, based on income. Any age.",
+      call: T("211", "2-1-1 and ask for Weatherization"),
+      say: `"I need the phone number for the Weatherization Assistance Program agency that serves [your county]."`,
+      ready: "Proof of income for everyone in the home (last 30 days), photo ID, and a recent light bill.",
+      web: L("www.tdhca.texas.gov/ca/wap", "Find your county's agency")});
+    if (a.owner && a.rural) s.push({pri: 4, t: "USDA home repair (rural homeowners)", why: a.senior ? "Repair loans at 1% interest. Since someone is 62+, you may get a GRANT you never pay back." : "Repair loans at only 1% interest for low-income rural homeowners.",
+      call: T("254-742-9700", "USDA Texas (254) 742-9700"),
+      say: `"I own my home in [your town]. I need the Section 504 home repair program. Which office handles my county?"`,
+      ready: "Photo ID, proof you own the home, and proof of income.",
+      web: L("www.rd.usda.gov/programs-services/single-family-housing-programs/single-family-housing-repair-loans-grants", "USDA 504 info")});
+    if (a.owner) s.push({pri: 6, t: "Habitat for Humanity repairs", why: "Many Habitat groups fix roofs, plumbing, and floors for homeowners.",
+      call: T("211", "2-1-1 and ask for Habitat near you"), say: `"Is there a Habitat for Humanity critical home repair program that covers [your county]?"`});
+  }
+
+  if (has("utilities")) s.push({pri: 2, t: "Help paying the light or gas bill", why: "Texas's CEAP program pays energy bills for low-income homes.",
+    call: T("211", "2-1-1 and ask for CEAP"), say: `"I need help paying my electric bill. Who runs CEAP energy assistance in [your county]?"`,
+    ready: "Your latest bill, ID, and proof of income. Also call your power company and ask for a payment plan BEFORE any shutoff.",
+    web: L("www.tdhca.texas.gov/comprehensive-energy-assistance-program-ceap", "CEAP info")});
+
+  if (has("rent")) s.push({pri: 1, t: "Rent or eviction", why: "If you got court papers, act NOW. You have rights and deadlines.",
+    call: T("211", "2-1-1 for rent help") +
+      `<p class="ready"><b>Free legal aid. Call the one for your part of Texas:</b></p>` +
+      T("800-733-8394", "East TX &amp; Houston area: Lone Star Legal Aid") +
+      T("888-529-5277", "North &amp; West TX (DFW, Panhandle): Legal Aid of NW Texas") +
+      T("888-988-9996", "Central &amp; South TX (Austin, San Antonio, Valley): TRLA"),
+    say: `"I'm behind on rent and scared of eviction. Can you help me or tell me who can?"`,
+    ready: "Any notice or court papers you got, and your lease.", web: L("texaslawhelp.org", "Free legal help: texaslawhelp.org")});
+
+  if (has("food")) s.push({pri: 2, t: "Food today and SNAP", why: "Food pantries can help today. SNAP (food stamps) helps every month.",
+    call: T("211", "2-1-1 for food today"), say: `"Where's the closest food pantry open today? And can you help me apply for SNAP?"`,
+    ready: "ID and proof of income for SNAP.", web: L("www.yourtexasbenefits.com", "Apply for SNAP online")});
+
+  if (has("disability")) {
+    s.push({pri: 2, t: "Disability / SSDI", why: "A disability lawyer costs nothing up front. They only get paid if you win, out of back pay, and the law limits the fee.",
+      call: T("800-772-1213", "Social Security 1-800-772-1213"),
+      say: `To Social Security: "I want to check the status of my disability claim." For a lawyer, ask 2-1-1 or search 'disability lawyer near me'.`,
+      ready: "Your Social Security number and any letters from Social Security. Never miss an appeal deadline (usually 60 days)."});
+    s.push({pri: 9, warn: true, t: "Don't borrow against SSDI back pay", why: "Cash advances on a pending claim are expensive and risky. Wait for the real money."});
+  }
+
+  if (has("credit")) {
+    s.push({pri: 5, t: "Get your free credit reports", why: "See exactly what's on there. Fight anything that's wrong.",
+      call: T("877-322-8228", "1-877-322-8228 (reports mailed free)"),
+      say: `"I'd like my free credit reports from all three bureaus mailed to me."`,
+      ready: "Your Social Security number and address.", web: L("www.annualcreditreport.com", "annualcreditreport.com")});
+    s.push({pri: 5, t: "If a company won't fix a mistake", why: "The federal consumer agency makes companies answer you.",
+      call: T("855-411-2372", "CFPB (855) 411-2372"),
+      say: `"I disputed an error on my credit report and they won't fix it. I want to file a complaint."`,
+      ready: "Copies of your dispute letters and their replies.", web: L("www.consumerfinance.gov/complaint", "File online")});
+    s.push({pri: 9, warn: true, t: "No one can erase true credit history", why: "Anyone charging money to 'wipe your credit clean' is a scam."});
+  }
+
+  if (has("loan")) {
+    const p = payment(3500, 30, 36);
+    let why = `Example: borrowing $3,500 for 3 years can cost about <b>$${Math.round(p)} a month</b>`;
+    if (a.income > 0) why += ` (${Math.round(p / a.income * 100)}% of the money coming in)`;
+    s.push({pri: 7, t: "If you still need a loan", why: why + ". Use the free help above first, then borrow only what's left.",
+      say: `Ask any lender: "Can I see my rate with a soft check that won't hurt my credit?" and "What's the APR?"`,
+      ready: "The person with the steady paycheck should apply. A Texas state ID works, no driver's license needed. Local credit unions often have the best rates."});
+    s.push({pri: 9, warn: true, t: "Stay away from payday and title loans", why: "In Texas they can cost 300%+ a year and take your car. Never pay a fee up front for a 'guaranteed' loan. That's a scam."});
+  }
+
+  return s.sort((x, y) => x.pri - y.pri);
+}
+/*ENGINE_END*/
+
+document.querySelectorAll("#needs .tile").forEach(t => t.onclick = () => t.classList.toggle("on"));
+document.querySelectorAll(".yn .tile").forEach(t => t.onclick = () => {
+  t.parentElement.querySelectorAll(".tile").forEach(x => x.classList.remove("on")); t.classList.add("on"); });
+
+function card(x, n) {
+  return `<div class="step${x.warn ? " warn" : ""}"><h3>${x.warn ? "⚠️ " : `<span class="num">${n}</span>`}${x.t}</h3><p>${x.why}</p>` +
+    (x.call || "") + (x.say ? `<div class="say"><b>What to say:</b><br>${x.say}</div>` : "") +
+    (x.ready ? `<p class="ready">📋 <b>Have ready:</b> ${x.ready}</p>` : "") + (x.web || "") + `</div>`;
+}
+
+function run() {
+  const yn = k => { const o = document.querySelector(`.yn[data-k="${k}"] .tile.on`); return o ? o.dataset.v === "1" : false; };
+  const a = { needs: [...document.querySelectorAll("#needs .tile.on")].map(x => x.dataset.v),
+    owner: yn("owner"), rural: yn("rural"), senior: yn("senior"),
+    income: parseFloat(document.getElementById("income").value) || 0 };
+  if (!a.needs.length) { alert("Tap at least one thing you need help with."); return; }
+  const steps = buildPlan(a), moves = steps.filter(x => !x.warn), warns = steps.filter(x => x.warn);
+  const top = moves.slice(0, 3), more = moves.slice(3);
+  let n = 0;
+  let html = `<h2>Start here. Do these first:</h2>` + top.map(x => card(x, ++n)).join("");
+  if (more.length) html += `<details><summary>➕ More places that can help (${more.length})</summary>${more.map(x => card(x, ++n)).join("")}</details>`;
+  if (warns.length) html += `<h2>⚠️ Watch out</h2>` + warns.map(x => card(x)).join("");
+  html += `<div class="bar"><button onclick="window.print()">🖨️ Print / Save</button><button onclick="location.reload()">↺ Start Over</button></div>`;
+  document.getElementById("out").innerHTML = html;
+  document.getElementById("out").scrollIntoView({behavior: "smooth"});
+}
+</script>
+</body>
+</html>
